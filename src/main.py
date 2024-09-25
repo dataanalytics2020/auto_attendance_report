@@ -13,6 +13,12 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
+#今日が日本の祝日かどうかを判定する関数
+def is_japanese_holiday():
+    today = date.today()
+    return jpholiday.is_holiday(today)
+    
+
 #処理が完了したらLINEに通知する
 def post_line(message):
     url = "https://notify-api.line.me/api/notify"
@@ -23,7 +29,7 @@ def post_line(message):
     
 #秒数をランダムに生成して、その秒数だけ待つ
 def wait_random_seconds():
-    return random.randint(1, 300)
+    return random.randint(1, 200)
 
 def login_to_chatwork(driver, username, password):
     driver.get("https://www.chatwork.com/login.php")
@@ -62,6 +68,17 @@ def send_message(driver, room_id, message):
     
     
 def main():
+    # 祝日かどうかを判定,祝日なら終了
+    if is_japanese_holiday():
+        logging.info('今日は日本の祝日です。')
+        print('今日は日本の祝日です。プログラムを終了します。')
+        post_line('今日は日本の祝日です。プログラムを終了します。')
+        time.sleep(10)
+        exit()
+    else:
+        logging.info('今日は日本の祝日ではありません。')
+        print('今日は日本の祝日ではありません。')
+        post_line('今日は日本の祝日ではありません。プログラムを継続します')
     #変数は.envファイルに保存しておく
     username = os.getenv("CHATWORK_USERNAME")
     password = os.getenv("CHATWORK_PASSWORD")
